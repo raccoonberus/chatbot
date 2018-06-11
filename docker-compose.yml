@@ -2,7 +2,8 @@ version: '2'
 
 services:
   app:
-    build: .
+#    build: .
+    image: raccoonberus/chatbot_app
     ports:
       - "8080:8080"
       - "9990:9990"
