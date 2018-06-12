@@ -1,5 +1,7 @@
 package com.raccoonberus.chatbot;
 
+import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,5 +14,9 @@ public class MainServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         PrintWriter writer = resp.getWriter();
         writer.print("Test message 2!!!");
+
+        writer.print(
+                new TelegramClient().send("kolya")
+        );
     }
 }
