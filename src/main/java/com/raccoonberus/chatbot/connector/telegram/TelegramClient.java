@@ -1,22 +1,40 @@
 package com.raccoonberus.chatbot.connector.telegram;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class TelegramClient {
     public String send(String message) {
         String token = System.getenv("TELEGRAM_BOT_TOKEN");
         String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
 
-        Client client = ClientBuilder.newClient();
-        String name = client.target("https://api.telegram.org/bot" + token + "/")
-                .path("sendMessage")
-                .queryParam("chat_id", chatID)
-                .queryParam("text", message)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.json(String.class), String.class);
-        return name;
+        URL url;
+        try {
+            url = new URL("https://api.telegram.org/");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            URLConnection yc = url.openConnection();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+
+            StringBuilder builder = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null)
+                builder.append(inputLine);
+            in.close();
+            return builder.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
