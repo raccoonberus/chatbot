@@ -1,6 +1,7 @@
 package com.raccoonberus.chatbot;
 
 import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
+import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
 
 public class Application {
     private static ReplyStrategy[] strategies = {
@@ -9,8 +10,8 @@ public class Application {
 
     public static void main(String[] args) {
 //        System.out.print(getMessage());
-
-
+        TelegramClient t = new TelegramClient();
+        t.send("hello");
     }
 
     private static String answer(String message) {
