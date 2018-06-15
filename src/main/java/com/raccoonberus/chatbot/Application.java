@@ -11,7 +11,7 @@ public class Application {
     public static void main(String[] args) {
 //        System.out.print(getMessage());
         TelegramClient t = new TelegramClient();
-        t.send("Hello Arina! I'm bot!");
+        t.send("");
     }
 
     private static String answer(String message) {
