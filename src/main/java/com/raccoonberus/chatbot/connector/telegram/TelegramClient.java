@@ -1,5 +1,9 @@
 package com.raccoonberus.chatbot.connector.telegram;
 
+import com.raccoonberus.chatbot.connector.telegram.model.GetUpdatesResponse;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -14,7 +18,7 @@ public class TelegramClient {
         String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
         String proxyAddr = System.getenv("TELEGRAM_PROXY");
 
-        try {
+        /*try {
 //            URL url = new URL("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatID + "&text=" + message);
             URL url = new URL("https://api.telegram.org/bot" + token + "/getUpdates?chat_id=" + chatID);
 
@@ -37,66 +41,29 @@ public class TelegramClient {
             return null;
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+
 
         return null;
     }
 
-    public class Employee {
-        private int id;
-        private String firstName;
+    public GetUpdatesResponse getUpdates()
+    {
+        String token = System.getenv("TELEGRAM_BOT_TOKEN");
+        String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
+        String proxyAddr = System.getenv("TELEGRAM_PROXY");
 
-        // standard getters and setters
-    }
+        ClientConfig config = new ClientConfig();
+        config.property(ClientProperties.PROXY_URI, proxyAddr);
 
-    Client client = ClientBuilder.newClient();
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target("https://api.telegram.org/");
+        WebTarget employeeWebTarget = webTarget.path("bot" + token + "/getUpdates?chat_id=" + chatID);
+        Invocation.Builder invocationBuilder = employeeWebTarget.request(MediaType.APPLICATION_JSON);
+        GetUpdatesResponse response = invocationBuilder.get(GetUpdatesResponse.class);
 
-    WebTarget webTarget = client.target("http://localhost:8082/spring-jersey");
-
-    WebTarget employeeWebTarget = webTarget.path("resources/employees");
-
-    Invocation.Builder invocationBuilder = employeeWebTarget.request(MediaType.APPLICATION.JSON);
-
-    Response response = invocationBuilder.get(Employee.class);
-
-    Response response = invocationBuilder.post(Entity.entity(employee, MediaType.APPLICATION_JSON));
-
-    public class RestClient {
-
-        private static final String REST_URI = "http://localhost:8082/spring-jersey/resources/employees";
-
-        private Client client = ClientBuilder.newClient();
-
-        public Employee getJsonEmployee(int id) {
-            return client
-                    .target(REST_URI)
-                    .path(String.valueOf(id))
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(Employee.class);
-        }
-        //...
-    }
-
-    public Response createJsonEmployee(Employee emp) {
-        return client
-                .target(REST_URI)
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(emp, MediaType.APPLICATION_JSON));
-    }
-
-    public class JerseyClientLiveTest {
-
-        public static final int HTTP_CREATED = 201;
-        private RestClient client = new RestClient();
-
-        @Test
-        public void givenCorrectObject_whenCorrectJsonRequest_thenResponseCodeCreated() {
-            Employee emp = new Employee(6, "Johny");
-
-            Response response = client.createJsonEmployee(emp);
-
-            assertEquals(response.getStatus(), HTTP_CREATED);
-        }
+        return response;
     }
 }
 
