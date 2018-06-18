@@ -12,6 +12,7 @@ public class Application {
 //        System.out.print(getMessage());
         TelegramClient t = new TelegramClient();
         t.getUpdates();
+//        t.send("");
     }
 
     private static String answer(String message) {

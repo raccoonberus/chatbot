@@ -18,7 +18,7 @@ public class TelegramClient {
         String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
         String proxyAddr = System.getenv("TELEGRAM_PROXY");
 
-        /*try {
+        try {
 //            URL url = new URL("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatID + "&text=" + message);
             URL url = new URL("https://api.telegram.org/bot" + token + "/getUpdates?chat_id=" + chatID);
 
@@ -41,29 +41,27 @@ public class TelegramClient {
             return null;
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-
+        }
 
 
         return null;
     }
 
-    public GetUpdatesResponse getUpdates()
-    {
+    public GetUpdatesResponse getUpdates() {
         String token = System.getenv("TELEGRAM_BOT_TOKEN");
         String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
         String proxyAddr = System.getenv("TELEGRAM_PROXY");
 
-        ClientConfig config = new ClientConfig();
-        config.property(ClientProperties.PROXY_URI, proxyAddr);
-
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("https://api.telegram.org/");
-        WebTarget employeeWebTarget = webTarget.path("bot" + token + "/getUpdates?chat_id=" + chatID);
-        Invocation.Builder invocationBuilder = employeeWebTarget.request(MediaType.APPLICATION_JSON);
-        GetUpdatesResponse response = invocationBuilder.get(GetUpdatesResponse.class);
+        client.property(ClientProperties.PROXY_URI, proxyAddr);
+        GetUpdatesResponse response = client.target("https://api.telegram.org/bot" + token + "/")
+                .path("getUpdates")
+                .queryParam("chat_id", chatID)
+                .request(MediaType.APPLICATION_JSON)
+//                .post(Entity.entity(null, MediaType.APPLICATION_JSON), GetUpdatesResponse.class);
+                .get(GetUpdatesResponse.class);
 
-        return response;
+        return null;
     }
 }
 
