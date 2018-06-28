@@ -61,6 +61,10 @@ public class TelegramClient {
 //                .post(Entity.entity(null, MediaType.APPLICATION_JSON), GetUpdatesResponse.class);
                 .get(GetUpdatesResponse.class);
 
+        System.out.println(response.isOk() ? "OK" : "Something wrong!");
+        if (response.getResult().length > 0)
+            System.out.println(response.getResult()[0].getUpdateId());
+
         return null;
     }
 }
