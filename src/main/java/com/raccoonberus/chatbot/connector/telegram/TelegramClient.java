@@ -19,8 +19,8 @@ public class TelegramClient {
         String proxyAddr = System.getenv("TELEGRAM_PROXY");
 
         try {
-//            URL url = new URL("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatID + "&text=" + message);
-            URL url = new URL("https://api.telegram.org/bot" + token + "/getUpdates?chat_id=" + chatID);
+            URL url = new URL("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatID + "&text=" + message);
+//            URL url = new URL("https://api.telegram.org/bot" + token + "/getUpdates?chat_id=" + chatID);
 
             URL proxyUrl = new URL(proxyAddr);
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort()));
