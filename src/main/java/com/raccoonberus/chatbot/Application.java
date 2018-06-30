@@ -3,12 +3,14 @@ package com.raccoonberus.chatbot;
 import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
 
+import java.io.IOException;
+
 public class Application {
     private static ReplyStrategy[] strategies = {
             new LazyReplyStrategy(),
     };
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        System.out.print(getMessage());
         TelegramClient t = new TelegramClient();
         t.getUpdates();

@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "result": [
+    {
+      "update_id": 934773487,
+      "message": {
+        "message_id": 22,
+        "from": {
+          "id": 360663876,
+          "is_bot": false,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "language_code": "en-US"
+        },
+        "chat": {
+          "id": 360663876,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "type": "private"
+        },
+        "date": 1530372162,
+        "text": "ghbdtn"
+      }
+    },
+    {
+      "update_id": 934773488,
+      "message": {
+        "message_id": 23,
+        "from": {
+          "id": 360663876,
+          "is_bot": false,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "language_code": "en-US"
+        },
+        "chat": {
+          "id": 360663876,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "type": "private"
+        },
+        "date": 1530372199,
+        "text": "efweew"
+      }
+    },
+    {
+      "update_id": 934773489,
+      "message": {
+        "message_id": 24,
+        "from": {
+          "id": 360663876,
+          "is_bot": false,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "language_code": "en-US"
+        },
+        "chat": {
+          "id": 360663876,
+          "first_name": "Sergey",
+          "last_name": "Cherkesov",
+          "username": "go_for_broke",
+          "type": "private"
+        },
+        "date": 1530373822,
+        "text": "dbdfbfd"
+      }
+    }
+  ]
+}
