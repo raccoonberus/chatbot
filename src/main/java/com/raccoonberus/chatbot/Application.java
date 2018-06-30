@@ -13,8 +13,8 @@ public class Application {
     public static void main(String[] args) throws IOException {
 //        System.out.print(getMessage());
         TelegramClient t = new TelegramClient();
-        t.getUpdates();
-//        t.send("");
+//        t.getUpdates();
+        t.send("Арина, я снова поменял долбанный прокси. Твой бот ;D");
     }
 
     private static String answer(String message) {
