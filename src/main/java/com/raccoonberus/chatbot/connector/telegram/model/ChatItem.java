@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ChatItem {
     @JsonProperty("id")
-    private long id;
+    private Long id;
+
+    @JsonProperty("title")
+    private String title;
 
     @JsonProperty("first_name")
     private String firstName;
@@ -18,15 +21,27 @@ public class ChatItem {
     @JsonProperty("type")
     private String type;
 
+    @JsonProperty("all_members_are_administrators")
+    private Boolean allMembersAreAdministrators;
+
     public ChatItem() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public ChatItem setId(long id) {
+    public ChatItem setId(Long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ChatItem setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -63,6 +78,15 @@ public class ChatItem {
 
     public ChatItem setType(String type) {
         this.type = type;
+        return this;
+    }
+
+    public Boolean getAllMembersAreAdministrators() {
+        return allMembersAreAdministrators;
+    }
+
+    public ChatItem setAllMembersAreAdministrators(Boolean allMembersAreAdministrators) {
+        this.allMembersAreAdministrators = allMembersAreAdministrators;
         return this;
     }
 }

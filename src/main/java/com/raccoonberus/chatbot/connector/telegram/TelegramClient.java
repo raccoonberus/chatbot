@@ -1,99 +1,82 @@
 package com.raccoonberus.chatbot.connector.telegram;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.raccoonberus.chatbot.connector.ChatConnector;
+import com.raccoonberus.chatbot.connector.ChatMessage;
 import com.raccoonberus.chatbot.connector.telegram.model.GetUpdatesResponse;
 import com.raccoonberus.chatbot.connector.telegram.model.ResultItem;
+import com.raccoonberus.chatbot.connector.telegram.model.SendMessageResponse;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class TelegramClient {
-    public String send(String message) {
-        String token = System.getenv("TELEGRAM_BOT_TOKEN");
-        String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
-        String proxyAddr = System.getenv("TELEGRAM_PROXY");
+public class TelegramClient implements ChatConnector {
+    private final String baseUrl;
+    private final Client client;
 
-        try {
-            URL url = new URL("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatID + "&text=" + message);
-//            URL url = new URL("https://api.telegram.org/bot" + token + "/getUpdates?chat_id=" + chatID);
+    private List<Long> updateId = new ArrayList<>();
 
-            URL proxyUrl = new URL(proxyAddr);
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort()));
-            URLConnection yc = url.openConnection(proxy);
-            yc.setDoOutput(true);
-            yc.setDoInput(true);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-
-            StringBuilder builder = new StringBuilder();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                builder.append(inputLine);
-            in.close();
-            return builder.toString();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        return null;
+    public TelegramClient(String token, String proxyAddr) {
+        this.baseUrl = "https://api.telegram.org/bot" + token + "/";
+        this.client = createTelegramClient(proxyAddr);
     }
 
-    public GetUpdatesResponse getUpdates() throws IOException {
-//        System.setProperty("http.proxyHost", "181.170.157.107");
-//        System.setProperty("http.proxyPort", "8080");
+    public void send(String chatId, String textMessage) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("chat_id", chatId);
+        params.put("text", textMessage);
+        SendMessageResponse response = callMethod("sendMessage", params, SendMessageResponse.class);
 
-        String token = System.getenv("TELEGRAM_BOT_TOKEN");
-        String chatID = System.getenv("TELEGRAM_BOT_CHAT_ID");
-        String proxyAddr = System.getenv("TELEGRAM_PROXY");
+        System.out.println(">>> " + response.getResult().getMessageId());
+    }
 
+    public List<ChatMessage> getInbox() {
+        GetUpdatesResponse response = callMethod("getUpdates", null, GetUpdatesResponse.class);
+
+        List<ChatMessage> messages = new ArrayList<>();
+        for (ResultItem item : response.getResult()) {
+            if (updateId.contains(item.getUpdateId()))
+                continue;
+            messages.add(item.getMessage());
+            updateId.add(item.getUpdateId());
+        }
+
+        return messages;
+    }
+
+    private Client createTelegramClient(String proxyAddr) {
         ClientConfig config = new ClientConfig();
         config.property(ClientProperties.PROXY_URI, proxyAddr);
         config.connectorProvider(new ApacheConnectorProvider());
         config.property(ClientProperties.CONNECT_TIMEOUT, 10 * 1000);
         config.property(ClientProperties.READ_TIMEOUT, 10 * 1000);
-        Client client = ClientBuilder.newClient(config);
+        return ClientBuilder.newClient(config);
+    }
 
-        String baseUrl = "https://api.telegram.org/bot" + token + "/";
-//        System.out.println(baseUrl);
+    private <T> T callMethod(String methodName, Map<String, Object> params, Class<T> responseType) {
+        WebTarget target = client.target(baseUrl).path(methodName);
 
-        GetUpdatesResponse response = client.target(baseUrl)
-                .path("getUpdates")
-                .queryParam("chat_id", chatID)
-                .request(MediaType.APPLICATION_JSON)
-//                .post(Entity.entity(null, MediaType.APPLICATION_JSON), GetUpdatesResponse.class);
-                .get(GetUpdatesResponse.class);
-//                .get(String.class);
-
-        System.out.println(response);
-
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-//        GetUpdatesResponse r = mapper.readValue(response, GetUpdatesResponse.class);
-//        System.out.println(r);
-
-        System.out.println(response.isOk() ? "OK" : "Something wrong!");
-        for (ResultItem item : response.getResult()) {
-            System.out.println(
-                    item.getMessage().getFrom().getUsername()
-                            + " -> "
-                            + item.getMessage().getText());
-            System.out.println("==========");
+        if (null != params) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
         }
 
-        return null;
+        T response = target
+                .request(MediaType.APPLICATION_JSON)
+                .get(responseType);
+
+        // log data
+
+        return response;
     }
 }
 

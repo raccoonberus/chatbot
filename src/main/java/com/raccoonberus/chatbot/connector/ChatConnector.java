@@ -1,9 +1,11 @@
 package com.raccoonberus.chatbot.connector;
 
+import java.util.List;
+
 public interface ChatConnector {
 
-    void send(String receiverId, String textMessage);
+    void send(String chatId, String textMessage);
 
-    void getInbox();
+    List<ChatMessage> getInbox();
 
 }
