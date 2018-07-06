@@ -5,6 +5,7 @@ import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Application {
@@ -12,34 +13,37 @@ public class Application {
             new LazyReplyStrategy(),
     };
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-//        System.out.print(getMessage());
-        TelegramClient t = new TelegramClient(
-                System.getenv("TELEGRAM_BOT_TOKEN"),
-                System.getenv("TELEGRAM_PROXY")
-        );
+    public static void main(String[] args) throws InterruptedException {
+        List<Thread> threads = new ArrayList<>();
 
-        while (true) {
-            List<ChatMessage> inbox = t.getInbox();
-            for (ChatMessage m : inbox) {
-                t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
+        Thread telegramThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TelegramClient t = new TelegramClient(
+                        System.getenv("TELEGRAM_BOT_TOKEN"),
+                        System.getenv("TELEGRAM_PROXY")
+                );
+                while (true) {
+                    List<ChatMessage> inbox = t.getInbox();
+                    for (ChatMessage m : inbox) {
+                        t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
+                    }
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            Thread.sleep(5 * 1000);
+        });
+        telegramThread.start();
+        threads.add(telegramThread);
+
+        //
+
+
+        for (Thread thread : threads) {
+            thread.join();
         }
-    }
-
-    private static String answer(String message) {
-        for (ReplyStrategy strategy :
-                strategies) {
-            if (strategy.isSupport(message)) {
-                return strategy.run(message);
-            }
-        }
-
-        return "Sorry, I don't understand you =)";
-    }
-
-    public static String getMessage() {
-        return "Hello from ChatBot";
     }
 }
