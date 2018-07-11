@@ -5,4 +5,4 @@ services:
     build: ./
     volumes:
       - ./:/code
-    command: cd /code && mvn clean package && java -jar target/chatbot-1.0.0.jar
+#    command: cd /code && mvn clean package && java -jar target/chatbot-1.0.0.jar
