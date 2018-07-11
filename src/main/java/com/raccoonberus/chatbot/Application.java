@@ -65,13 +65,23 @@ public class Application {
                         GetDialogsResponse response = vk.messages().getDialogs(actor).execute();
                         for (Dialog d : response.getItems()) {
                             if (null != d.isUnanswered() && d.isUnanswered()) {
+                                String query = d.getMessage().getBody().toLowerCase();
+                                String answer;
+
+                                if ("hello".equals(query)) {
+                                    answer = "Hello! \nNice to meet you!";
+                                } else if ("how are you?".equals(query)) {
+                                    answer = "Thanks! \nI'm fine! And you?";
+                                } else
+                                    answer = String.format(
+                                            "Hello! " +
+                                                    "Nice to meet you! " +
+                                                    "Sorry, but command \"%s\" is unknown for me =(",
+                                            d.getMessage().getBody());
+
                                 vk.messages().send(actor)
                                         .userId(d.getMessage().getUserId())
-                                        .message(String.format(
-                                                "Hello! " +
-                                                        "Nice to meet you! " +
-                                                        "Sorry, but command \"%s\" is unknown for me =(",
-                                                d.getMessage().getBody()))
+                                        .message(answer)
                                         .execute();
                             }
                         }
