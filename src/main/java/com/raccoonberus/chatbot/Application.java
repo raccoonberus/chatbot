@@ -1,21 +1,17 @@
 package com.raccoonberus.chatbot;
 
 import com.raccoonberus.chatbot.connector.ChatMessage;
-import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
+import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
-import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Dialog;
-import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
-import com.vk.api.sdk.objects.messages.responses.GetResponse;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
