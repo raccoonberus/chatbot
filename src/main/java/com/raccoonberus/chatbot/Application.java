@@ -3,6 +3,12 @@ package com.raccoonberus.chatbot;
 import com.raccoonberus.chatbot.connector.ChatMessage;
 import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
+import com.vk.api.sdk.client.TransportClient;
+import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.GroupActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.httpclient.HttpTransportClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,30 +22,46 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
 
-        Thread telegramThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                TelegramClient t = new TelegramClient(
-                        System.getenv("TELEGRAM_BOT_TOKEN"),
-                        System.getenv("TELEGRAM_PROXY")
-                );
-                while (true) {
-                    List<ChatMessage> inbox = t.getInbox();
-                    for (ChatMessage m : inbox) {
-                        t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
-                    }
-                    try {
-                        Thread.sleep(5 * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        /*Thread telegramThread = new Thread(() -> {
+            TelegramClient t = new TelegramClient(
+                    System.getenv("TELEGRAM_BOT_TOKEN"),
+                    System.getenv("TELEGRAM_PROXY")
+            );
+            while (true) {
+                List<ChatMessage> inbox = t.getInbox();
+                for (ChatMessage m : inbox) {
+                    t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
+                }
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
         telegramThread.start();
-        threads.add(telegramThread);
+        threads.add(telegramThread);*/
 
-        //
+        Thread vkontakteThread = new Thread(() -> {
+            TransportClient transportClient = HttpTransportClient.getInstance();
+            VkApiClient vk = new VkApiClient(transportClient);
+            GroupActor actor = new GroupActor(
+                    Integer.parseInt(System.getenv("VKONTAKTE_GROUP_ID")),
+                    System.getenv("VKONTAKTE_GROUP_KEY")
+            );
+//            vk.messages().get(actor).count(10).execute();
+            try {
+                String msg = "Hello! Now I can send messages to VK's users and chats!";
+                vk.messages().send(actor).userId(199177108).message(msg).execute();
+                vk.messages().send(actor).userId(54438953).message(msg).execute();
+            } catch (ApiException e) {
+                e.printStackTrace();
+            } catch (ClientException e) {
+                e.printStackTrace();
+            }
+        });
+        vkontakteThread.start();
+        threads.add(vkontakteThread);
 
 
         for (Thread thread : threads) {
