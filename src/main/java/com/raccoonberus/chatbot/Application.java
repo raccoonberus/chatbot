@@ -6,9 +6,14 @@ import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
+import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Message;
+import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
+import com.vk.api.sdk.objects.messages.responses.GetResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,16 +54,39 @@ public class Application {
                     Integer.parseInt(System.getenv("VKONTAKTE_GROUP_ID")),
                     System.getenv("VKONTAKTE_GROUP_KEY")
             );
-//            vk.messages().get(actor).count(10).execute();
-            try {
-                String msg = "Hello! Now I can send messages to VK's users and chats!";
-                vk.messages().send(actor).userId(199177108).message(msg).execute();
-                vk.messages().send(actor).userId(54438953).message(msg).execute();
-            } catch (ApiException e) {
-                e.printStackTrace();
-            } catch (ClientException e) {
-                e.printStackTrace();
+            while (true) {
+                try {
+                    GetDialogsResponse response = vk.messages().getDialogs(actor).execute();
+                    for (Dialog d : response.getItems()) {
+                        if (null!=d.isUnanswered() && d.isUnanswered()) {
+                            vk.messages().send(actor)
+                                    .userId(d.getMessage().getUserId())
+                                    .message(String.format("What is mean \"%s\"?", d.getMessage().getBody()))
+                                    .execute();
+                        }
+                    }
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                } catch (ClientException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
+//            try {
+//                String msg = "Hello! Now I can send messages to VK's users and chats!";
+//                vk.messages().send(actor).userId(199177108).message(msg).execute();
+//                vk.messages().send(actor).userId(54438953).message(msg).execute();
+//            } catch (ApiException e) {
+//                e.printStackTrace();
+//            } catch (ClientException e) {
+//                e.printStackTrace();
+//            }
         });
         vkontakteThread.start();
         threads.add(vkontakteThread);
