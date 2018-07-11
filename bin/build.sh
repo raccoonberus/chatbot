@@ -7,7 +7,7 @@ VERSION=$(mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-re
 
 echo "Build: ${VERSION}"
 
-#mvn clean package
+mvn clean package
 docker build -t $DOCKER_ID_USER/${IMAGE_NAME}:latest \
     -t $DOCKER_ID_USER/${IMAGE_NAME}:${VERSION} .
 

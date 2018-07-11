@@ -67,7 +67,11 @@ public class Application {
                             if (null != d.isUnanswered() && d.isUnanswered()) {
                                 vk.messages().send(actor)
                                         .userId(d.getMessage().getUserId())
-                                        .message(String.format("What is mean \"%s\"?", d.getMessage().getBody()))
+                                        .message(String.format(
+                                                "Hello! " +
+                                                        "Nice to meet you! " +
+                                                        "Sorry, but command \"%s\" is unknown for me =(",
+                                                d.getMessage().getBody()))
                                         .execute();
                             }
                         }
