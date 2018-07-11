@@ -23,56 +23,61 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
         List<Thread> threads = new ArrayList<>();
 
-        /*Thread telegramThread = new Thread(() -> {
-            TelegramClient t = new TelegramClient(
-                    System.getenv("TELEGRAM_BOT_TOKEN"),
-                    System.getenv("TELEGRAM_PROXY")
-            );
-            while (true) {
-                List<ChatMessage> inbox = t.getInbox();
-                for (ChatMessage m : inbox) {
-                    t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
-                }
-                try {
-                    Thread.sleep(5 * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        /*Thread telegramThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TelegramClient t = new TelegramClient(
+                        System.getenv("TELEGRAM_BOT_TOKEN"),
+                        System.getenv("TELEGRAM_PROXY")
+                );
+                while (true) {
+                    List<ChatMessage> inbox = t.getInbox();
+                    for (ChatMessage m : inbox) {
+                        t.send(m.getSenderId(), String.format("I don't know what is mean \"%s\"", m.getMessageText()));
+                    }
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         telegramThread.start();
         threads.add(telegramThread);*/
 
-        Thread vkontakteThread = new Thread(() -> {
-            TransportClient transportClient = HttpTransportClient.getInstance();
-            VkApiClient vk = new VkApiClient(transportClient);
-            GroupActor actor = new GroupActor(
-                    Integer.parseInt(System.getenv("VKONTAKTE_GROUP_ID")),
-                    System.getenv("VKONTAKTE_GROUP_KEY")
-            );
-            while (true) {
-                try {
-                    GetDialogsResponse response = vk.messages().getDialogs(actor).execute();
-                    for (Dialog d : response.getItems()) {
-                        if (null!=d.isUnanswered() && d.isUnanswered()) {
-                            vk.messages().send(actor)
-                                    .userId(d.getMessage().getUserId())
-                                    .message(String.format("What is mean \"%s\"?", d.getMessage().getBody()))
-                                    .execute();
+        Thread vkontakteThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TransportClient transportClient = HttpTransportClient.getInstance();
+                VkApiClient vk = new VkApiClient(transportClient);
+                GroupActor actor = new GroupActor(
+                        Integer.parseInt(System.getenv("VKONTAKTE_GROUP_ID")),
+                        System.getenv("VKONTAKTE_GROUP_KEY")
+                );
+                while (true) {
+                    try {
+                        GetDialogsResponse response = vk.messages().getDialogs(actor).execute();
+                        for (Dialog d : response.getItems()) {
+                            if (null != d.isUnanswered() && d.isUnanswered()) {
+                                vk.messages().send(actor)
+                                        .userId(d.getMessage().getUserId())
+                                        .message(String.format("What is mean \"%s\"?", d.getMessage().getBody()))
+                                        .execute();
+                            }
                         }
+                    } catch (ApiException e) {
+                        e.printStackTrace();
+                    } catch (ClientException e) {
+                        e.printStackTrace();
                     }
-                } catch (ApiException e) {
-                    e.printStackTrace();
-                } catch (ClientException e) {
-                    e.printStackTrace();
-                }
 
-                try {
-                    Thread.sleep(5 * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
 //            try {
 //                String msg = "Hello! Now I can send messages to VK's users and chats!";
@@ -83,6 +88,7 @@ public class Application {
 //            } catch (ClientException e) {
 //                e.printStackTrace();
 //            }
+            }
         });
         vkontakteThread.start();
         threads.add(vkontakteThread);
