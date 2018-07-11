@@ -4,5 +4,7 @@ services:
   app:
     build: ./
     volumes:
-      - ./:/code
-#    command: cd /code && mvn clean package && java -jar target/chatbot-1.0.0.jar
+      - ./:/app
+    env_file:
+      - .env
+    command: java -jar chatbot-1.0.0.jar >> /app/access.log

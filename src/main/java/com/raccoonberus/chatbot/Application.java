@@ -12,6 +12,7 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class Application {
         telegramThread.start();
         threads.add(telegramThread);*/
 
+//        System.out.println(System.getenv("VKONTAKTE_GROUP_ID"));
+//        System.out.println(System.getenv("VKONTAKTE_GROUP_KEY"));
+//        System.exit(0);
+
         Thread vkontakteThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -78,16 +83,6 @@ public class Application {
                         e.printStackTrace();
                     }
                 }
-
-//            try {
-//                String msg = "Hello! Now I can send messages to VK's users and chats!";
-//                vk.messages().send(actor).userId(199177108).message(msg).execute();
-//                vk.messages().send(actor).userId(54438953).message(msg).execute();
-//            } catch (ApiException e) {
-//                e.printStackTrace();
-//            } catch (ClientException e) {
-//                e.printStackTrace();
-//            }
             }
         });
         vkontakteThread.start();
