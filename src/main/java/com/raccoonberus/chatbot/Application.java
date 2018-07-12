@@ -33,7 +33,7 @@ public class Application {
         try {
 //            properties.load(new FileInputStream(System.getProperty("external.properties.file")));
             properties.load(new FileInputStream(
-                    new File("chatbot.properties").getAbsoluteFile()
+                    new File(System.getProperty("external.properties.file")).getAbsoluteFile()
             ));
         } catch (IOException e) {
             e.printStackTrace();
