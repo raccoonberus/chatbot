@@ -1,8 +1,5 @@
 package com.raccoonberus.chatbot;
 
-import com.raccoonberus.chatbot.connector.ChatMessage;
-import com.raccoonberus.chatbot.connector.telegram.TelegramClient;
-import com.raccoonberus.chatbot.strategy.LazyReplyStrategy;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
@@ -12,16 +9,41 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Application {
-    private static ReplyStrategy[] strategies = {
-            new LazyReplyStrategy(),
-    };
+
+    private static final StrategiesRegistry REGISTRY = new StrategiesRegistry();
 
     public static void main(String[] args) throws InterruptedException {
+
+//        System.out.println(new File("chatbot.properties").getAbsoluteFile());
+//        System.exit(-1);
+
+        Properties properties = new Properties();
+        if (System.getProperty("external.properties.file") == null) {
+            System.err.println("You should define \"external.properties.file\" property and write in file strategies list");
+            System.exit(-1);
+        }
+        try {
+//            properties.load(new FileInputStream(System.getProperty("external.properties.file")));
+            properties.load(new FileInputStream(
+                    new File("chatbot.properties").getAbsoluteFile()
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        for (String className : properties.getProperty("chatbot.strategies").split(";")) {
+            REGISTRY.add(className);
+        }
+
         List<Thread> threads = new ArrayList<>();
 
         /*Thread telegramThread = new Thread(new Runnable() {
@@ -66,18 +88,7 @@ public class Application {
                         for (Dialog d : response.getItems()) {
                             if (null != d.isUnanswered() && d.isUnanswered()) {
                                 String query = d.getMessage().getBody().toLowerCase();
-                                String answer;
-
-                                if ("hello".equals(query)) {
-                                    answer = "Hello! \nNice to meet you!";
-                                } else if ("how are you?".equals(query)) {
-                                    answer = "Thanks! \nI'm fine! And you?";
-                                } else
-                                    answer = String.format(
-                                            "Hello! " +
-                                                    "Nice to meet you! " +
-                                                    "Sorry, but command \"%s\" is unknown for me =(",
-                                            d.getMessage().getBody());
+                                String answer = REGISTRY.resolveAndReply(query);
 
                                 vk.messages().send(actor)
                                         .userId(d.getMessage().getUserId())

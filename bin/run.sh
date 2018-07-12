@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 mvn package
-source .env
-java -jar target/chatbot-1.0.0.jar
+export $(cat .env | xargs)
+java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar
