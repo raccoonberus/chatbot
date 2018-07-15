@@ -26,3 +26,6 @@ hs_err_pid*
 /target/
 *.iml
 .env
+
+/github_deploy_key
+/github_deploy_key.pub
