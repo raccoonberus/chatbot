@@ -1,0 +1,15 @@
+services:
+  - docker
+
+language: java
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+deploy:
+  - provider: script
+    script: bash scripts/deploy.sh staging
+    on:
+      branch: develop
+  - provider: script
+    script: bash scripts/deploy.sh production
+    on:
+      branch: master
