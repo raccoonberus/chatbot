@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ssh -o "StrictHostKeyChecking no" root@${PRODUCTION_SERVER}
+ssh -i .travis/github_deploy_key.enc -o "StrictHostKeyChecking no" root@${PRODUCTION_SERVER}
 
 cd ~/chatbot/
 git pull
