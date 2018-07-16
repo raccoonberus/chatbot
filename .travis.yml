@@ -14,7 +14,7 @@ cache:
   - $HOME/.m2
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_821806d8f5e1_key -iv $encrypted_821806d8f5e1_iv -in github_deploy_key.enc -out github_deploy_key -d
+  - openssl aes-256-cbc -K $encrypted_821806d8f5e1_key -iv $encrypted_821806d8f5e1_iv -in .travis/github_deploy_key.enc -out github_deploy_key -d
 
 #install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
