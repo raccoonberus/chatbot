@@ -7,7 +7,12 @@ language: java
 
 env:
   global:
-    - secure: "EOqB3gkNStmsMEkog3RXRhvyiMiDd65fpk0e88TMrKDyd+Pe5gKkeSq6eEiqbJU0muA/N65ob/JRjmI/dZRFQK7NIALRBpz9VgDEYyuUFCyfvThSJ+8fcc0JSicWrF48jdPRUDZB9T5fXpPYNyhNA+gl3JyCCbWa2b125mJahIa1UkdYGnm8dCciXJ4lWIdGR1R+nz1SYD5QHAtCRxRW1amM3H3VVR8LIrWCrGGK6VPdsguxd/5kAHbOSLWHcmLFcLUTRGg5FlFOereealjWVp01FKLtR4XQnd8I5CrR3RBEAIEyjNOBFEtPK5aIK0PZGxHe5eQuA1GBcN4+VLbP8KpE7c+jCZnb/6KFrbRzKYbCJAQZ1uOtIZqhVqoxs4jkl8g4YZfRIpVZaSLCr5eVsfdU35uslZEaiv6aoQjtMzGwXuBmqISCOW603KhG3TQJWzqrRsS0kXMPap2l8VgRxu/qilvAf0qltGfFRWAteqjyW75/AFzy/A92z7sVge4Rw8x4+7sSKpOuGU1XP3YHNYnUtIZW6h5RO04jBHOa+d0e6ZFPWQVv/iPC+kPH88YSsvq3JyjuaXry8uPguPI6Mgs6R848dfY5oj9s3XtAn/eqx7DggKKO0Wso9tST6iRtv6AsPppyEvUX1IOmvWVfHx1HsLlwtwXdS/pR6dUPBBg="
+    - secure: "Rdizk+6mMx5MMNTNiVtxG3RM6Cca4SHqCfWLZle7gfFspg210WnmrRGWOre0XD/4/f81YgVM7b3kAs+Js5Gk72L2ywQGlHw2lVCqvqp21zHy6ANsC9PCxSq0eFMgY11MAM/vrzDH0XYyKbmsjnKYZOnNB/UdNJj+gP5XkIOND9wtLU9IR+g+QV81erXk9dZ1ViXB4XFWLDHKzxkfs0rctnJfyC2rXcLcE0ohmjT8ciq6KZjtMTYeJWJlLP2u0JOfDSxijN9dqyHLqSTLXDsK1Z/QjYXlCzkbw3j3yqGnhmGJAhqbBYtPsctavvPYEcYRu4iYWTdHoFn+qhenhntJRxeZDIwJ/sZRVYbThfYz2jpMqbJ+RKM4s/inWM3CthnmNuBEnzCaDyl1MFhUjeyXAVxWibr/DDysGvUI9ac4ZfHowBfS2T+R8PDH3I7I8TdP2BUeeCsBxDvuWS8VdYfY8Mi0kWjOzjFnj/5sKIviXCxQyeFLsNTVnOrQAcLcd9Ee1+SYmf8nM62sxWHuup2stftVDpk17OOZ3F4uotNfYoMRTITz6uky2eggeKyoSMle+u0ftiXSk8tk8eBQSUApich9cmUO6UpmNeJBvZQd3mGItvF6IwXLGG5NYjpfzqN2c95fsCk3itU2nYFcqVrSljt+ljnLSS3M96UPuz1hzCg="
+
+addons:
+    apt:
+        packages:
+            - sshpass
 
 cache:
   directories:
@@ -24,17 +29,19 @@ after_success:
        $(npm bin)/set-up-ssh --key "$encrypted_XXXXXXXXXXXX_key" \
                              --iv "$encrypted_XXXXXXXXXXXX_iv" \
                              --path-encrypted-key ".travis/github_deploy_key.enc"
+  - export SSHPASS=$DEPLOY_PASS
+  - sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/scripts/deploy.sh
 
-before_deploy:
-  - openssl aes-256-cbc -K $encrypted_821806d8f5e1_key -iv $encrypted_821806d8f5e1_iv -in .travis/github_deploy_key.enc -out github_deploy_key -d
-  - eval "$(ssh-agent -s)"
+#before_deploy:
+#  - openssl aes-256-cbc -K $encrypted_821806d8f5e1_key -iv $encrypted_821806d8f5e1_iv -in .travis/github_deploy_key.enc -out github_deploy_key -d
+#  - eval "$(ssh-agent -s)"
 
-deploy:
+#deploy:
 #  - provider: script
 #    script: bash scripts/deploy.sh staging
 #    on:
 #      branch: develop
-  - provider: script
-    script: bash scripts/deploy.sh production
-    on:
-      branch: master
+#  - provider: script
+#    script: bash scripts/deploy.sh production
+#    on:
+#      branch: master
