@@ -15,9 +15,9 @@ cache:
 
 install: true
 script:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - chmod +x bin/build.sh
-  - bin/build.sh
+  - mvn install #-DskipTests=true -Dmaven.javadoc.skip=true -B -V
+#  - chmod +x bin/build.sh
+#  - bin/build.sh
 
 after_success:
   - |
