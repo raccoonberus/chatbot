@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/scripts/deploy.sh
 #ssh -i .travis/github_deploy_key.enc -o "StrictHostKeyChecking no" root@${PRODUCTION_SERVER}
 
 cd ~/chatbot/
