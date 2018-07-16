@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/scripts/deploy.sh
+sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
+cd $DEPLOY_PATH
 #ssh -i .travis/github_deploy_key.enc -o "StrictHostKeyChecking no" root@${PRODUCTION_SERVER}
 
-cd ~/chatbot/
+#cd ~/chatbot/
 git pull
 
 IMAGE_NAME=chatbot_app
