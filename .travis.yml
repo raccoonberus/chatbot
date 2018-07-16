@@ -18,7 +18,7 @@ install: true
 script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 #  - mvn clean install
-  - chmod 600 bin/build.sh
+  - chmod +x bin/build.sh
   - bin/build.sh
 
 after_success:
