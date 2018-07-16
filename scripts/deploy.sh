@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ssh root@${PRODUCTION_SERVER}
+ssh -o "StrictHostKeyChecking no" root@${PRODUCTION_SERVER}
 
 cd ~/chatbot/
 git pull
