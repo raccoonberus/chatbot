@@ -16,6 +16,7 @@ mvn clean package -DskipTests=true
 java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &
 echo $! > ${PID_FILE}
 
+
 #IMAGE_NAME=chatbot_app
 #DOCKER_ID_USER="raccoonberus"
 #VERSION=$(mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q 2> /dev/null)
