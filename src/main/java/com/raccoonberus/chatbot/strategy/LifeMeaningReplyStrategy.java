@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class LifeMeaningReplyStrategy implements ReplyStrategy {
 
-    private static final String keywords = "смысл жизни";
+    private static final String keywords = "смысл жизни meaning life";
 
     @Override
     public boolean isSupport(String message) {
@@ -19,7 +19,7 @@ public class LifeMeaningReplyStrategy implements ReplyStrategy {
         Set<String> set2 = new HashSet<>(Arrays.asList(s.split(" ")));
         Set<String> set1 = new HashSet<>(Arrays.asList(keywords.toLowerCase().split(" ")));
         set1.retainAll(set2);
-        return set1.size() == 2;
+        return set1.size() >= 2;
     }
 
     @Override
