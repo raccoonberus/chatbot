@@ -5,7 +5,8 @@ PID_FILE=/var/run/chatbot.pid
 #sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
 
 echo "Open project dir ${DEPLOY_PATH}"
-cd $DEPLOY_PATH
+#cd $DEPLOY_PATH
+cd /root/chatbot
 
 git reset --hard HEAD
 git pull

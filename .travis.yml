@@ -20,6 +20,9 @@ cache:
 script:
   - mvn test
 
+#env:
+#  - DEPLOY_PATH=/root/chatbot/
+
 after_success:
   - sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST -o stricthostkeychecking=no 'bash /root/chatbot/scripts/deploy.sh'
 
