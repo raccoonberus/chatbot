@@ -16,14 +16,17 @@ echo 'Files updated'
 mvn clean package -DskipTests=true
 
 if [[ -f ${PID_FILE} ]]; then
-    kill $(ps aux | grep 'chatbot-' | awk '{print $2}')
+    kill $(ps aux | grep 'chatbot-' | awk '{print $2}') || true
 #    kill -9 "$(cat ${PID_FILE})" || true
 #    rm ${PID_FILE}
     echo 'Stop old version'
 fi
 
+
+echo 'Run new version'
 java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &
 echo $! > ${PID_FILE}
+echo 'Success!!!'
 
 
 #IMAGE_NAME=chatbot_app
