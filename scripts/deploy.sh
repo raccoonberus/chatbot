@@ -4,7 +4,7 @@ PID_FILE=/var/run/chatbot.pid
 
 #sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
 
-echo "Open project dir ${DEPLOY_PATH}"
+#echo "Open project dir ${DEPLOY_PATH}"
 #cd $DEPLOY_PATH
 cd /root/chatbot
 
@@ -25,8 +25,8 @@ mvn clean package -DskipTests=true
 kill $(ps aux | grep 'chatbot-' | awk '{print $2}') || true
 
 echo 'Run new version'
-java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &>/dev/null &
-echo $! > ${PID_FILE}
+java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &> ./chatbot.log &
+#echo $! > ${PID_FILE}
 echo 'Success!!!'
 
 
