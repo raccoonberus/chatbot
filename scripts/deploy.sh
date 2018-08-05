@@ -2,10 +2,10 @@
 
 PID_FILE=/var/run/chatbot.pid
 
-sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
-cd $DEPLOY_PATH
+#sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
+#cd $DEPLOY_PATH
 
-git checkout master
+#git checkout master
 git pull origin master
 
 if [[ -f ${PID_FILE} ]]; then

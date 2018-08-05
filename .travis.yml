@@ -7,9 +7,11 @@ env:
     - secure: "SybOpZqAOPxbI9YQKlnF/1OJ9spKeN1q2M2Z/oiBPogWdZvkvgsn9gZAVTmWnC6Zn00i/76fXUOFDEOuqDYJmUzUb+0TMmCRDh6YxiP9+ED5ds/3VOmf4nLWwrMlQqATFU73DzxHVDQRqNvXgwac4nGG0TEjH79pdC4MfbpWXCxTcR8k3gABaKiXyXURZtJpQAf7aEMCAMGez6XiU4nqqvLc48wuTIlb03hqr6Mr+6EV7JtXPSjjCkL3tSL3dkkQ5VU+3R7+gU1MtboScJncWDK/cEM3yUJy/m8a0jEadOt+nqE81ysBA4Hu8OZf+rjZvQAlp05IDPJ1SxfANrQSBLaNNFsS8Y0aRaQDUmJaGTrKwZfcbezdWbVb2g8/Juy2aqTKxSuXBV3EOWx6mTvLSgIbA2LB6jVJ58DKL+JzFjffyVh8/ZUFHpeiKYWs9RI+cxEJK/qGe7MdnOds1ZbwjXPRQ1eGAo6v3YwRWHxYGMxczloqpFkJGSUU0hpcArQ8NK6j4ohRVvsA+QrHVxKYE7K4iBGHJfC3zq9RIwFGg7l66NI2bouY5UuohXAoYkFLDJT1YfiBwVh0H1qGJBNQ4QlkgpMzyL713DCRO/3FvsVqYz2xw419Id+Zp+NmNSQDdvVb2T8AVSLfVVLlcp7qfrLlEZQpBfQmX26ohtsCrO4="
 
 addons:
-    apt:
-        packages:
-            - sshpass
+  ssh_known_hosts:
+    - 167.99.242.86
+  apt:
+    packages:
+      - sshpass
 
 cache:
   directories:
@@ -18,8 +20,11 @@ cache:
 script:
   - mvn test
 
-deploy:
-  - provider: script
-    script: bash scripts/deploy.sh production
-    on:
-      branch: master
+after_success:
+  - sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST -o stricthostkeychecking=no 'bash /root/chatbot/scripts/deploy.sh'
+
+#deploy:
+#  - provider: script
+#    script: bash scripts/deploy.sh production
+#    on:
+#      branch: master
