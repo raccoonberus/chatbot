@@ -13,6 +13,8 @@ git pull
 
 echo 'Files updated'
 
+mvn clean package -DskipTests=true
+
 if [[ -f ${PID_FILE} ]]; then
     kill $(ps aux | grep 'chatbot-' | awk '{print $2}')
 #    kill -9 "$(cat ${PID_FILE})" || true
@@ -20,7 +22,6 @@ if [[ -f ${PID_FILE} ]]; then
     echo 'Stop old version'
 fi
 
-mvn clean package -DskipTests=true
 java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &
 echo $! > ${PID_FILE}
 
