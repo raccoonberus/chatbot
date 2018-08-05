@@ -25,7 +25,8 @@ mvn clean package -DskipTests=true
 kill $(ps aux | grep 'chatbot-' | awk '{print $2}') || true
 
 echo 'Run new version'
-java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &> ./chatbot.log &
+export $(cat .env | xargs) && \
+    java -Dexternal.properties.file='chatbot.properties' -jar target/chatbot-1.0.0.jar &> ./chatbot.log &
 #echo $! > ${PID_FILE}
 echo 'Success!!!'
 
