@@ -12,9 +12,7 @@ import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class Application {
 
@@ -40,7 +38,7 @@ public class Application {
             System.exit(-1);
         }
 
-        for (String className : properties.getProperty("chatbot.strategies").split(";")) {
+        for (String className : getClassesFromConfig(properties.getProperty("chatbot.strategies"))) {
             REGISTRY.add(className);
         }
 
@@ -117,5 +115,13 @@ public class Application {
         for (Thread thread : threads) {
             thread.join();
         }
+    }
+
+    public static String[] getClassesFromConfig(String line) {
+        List<String> list = new LinkedList<>(Arrays.asList(
+                line.split("[;,:]")
+        ));
+        list.removeAll(Arrays.asList("", null));
+        return list.toArray(new String[]{});
     }
 }

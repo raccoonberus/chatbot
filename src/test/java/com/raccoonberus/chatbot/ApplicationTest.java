@@ -10,4 +10,12 @@ public class ApplicationTest {
     public void getMessage() {
 
     }
+
+    @Test
+    public void check_getClassesFromConfig() {
+        String[] classes = Application.getClassesFromConfig("one;two::three,four");
+        assertEquals(4, classes.length);
+        assertEquals("one", classes[0]);
+        assertEquals("four", classes[3]);
+    }
 }
