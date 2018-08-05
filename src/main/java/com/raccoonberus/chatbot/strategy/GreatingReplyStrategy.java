@@ -26,7 +26,7 @@ public class GreatingReplyStrategy implements ReplyStrategy {
 
     @Override
     public String run(String message) {
-        return "Hello!!";
+        return "Hello!!!";
     }
 
 }

@@ -92,6 +92,7 @@ public class Application {
                                         .userId(d.getMessage().getUserId())
                                         .message(answer)
                                         .execute();
+                                System.out.println(d.getMessage().getUserId() + " <- " + answer);
                             }
                         }
                     } catch (ApiException e) {
