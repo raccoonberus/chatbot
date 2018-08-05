@@ -3,14 +3,19 @@
 PID_FILE=/var/run/chatbot.pid
 
 #sshpass -p $DEPLOY_PASSWORD ssh $DEPLOY_USER@$DEPLOY_HOST
+
+echo "Open project dir ${DEPLOY_PATH}"
 cd $DEPLOY_PATH
 
 git reset --hard HEAD
-#git checkout master
 git pull
 
+echo 'Files updated'
+
 if [[ -f ${PID_FILE} ]]; then
-    kill -9 "$(cat ${PID_FILE})"
+    kill -9 "$(cat ${PID_FILE})" || true
+    rm ${PID_FILE}
+    echo 'Stop old version'
 fi
 
 mvn clean package -DskipTests=true
