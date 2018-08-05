@@ -14,8 +14,9 @@ git pull
 echo 'Files updated'
 
 if [[ -f ${PID_FILE} ]]; then
-    kill -9 "$(cat ${PID_FILE})" || true
-    rm ${PID_FILE}
+    kill $(ps aux | grep 'chatbot-' | awk '{print $2}')
+#    kill -9 "$(cat ${PID_FILE})" || true
+#    rm ${PID_FILE}
     echo 'Stop old version'
 fi
 
