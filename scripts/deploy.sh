@@ -6,8 +6,8 @@ PID_FILE=/var/run/chatbot.pid
 #cd $DEPLOY_PATH
 
 git reset --hard HEAD
-git checkout master
-git pull origin master
+#git checkout master
+git pull
 
 if [[ -f ${PID_FILE} ]]; then
     kill -9 "$(cat ${PID_FILE})"
