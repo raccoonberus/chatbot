@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GreatingReplyStrategy implements ReplyStrategy {
+public class GreetingReplyStrategy implements ReplyStrategy {
 
 
     private static final String keywords = "hello,hi,aloha,привет,хай,здравствуй";
