@@ -1,6 +1,6 @@
 package com.raccoonberus.chatbot.strategy;
 
-import jdk.nashorn.internal.runtime.ParserException;
+//import jdk.nashorn.internal.runtime.ParserException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeFilter;
@@ -10,7 +10,7 @@ public class WantGoToCinema {
 
     private static final String keywords = "what about cinema?";
 
-    public String run(String address) {
+    /*public String run(String address) {
 
         try {
             Parser parser = new Parser();
@@ -27,5 +27,5 @@ public class WantGoToCinema {
             e.printStackTrace();
         }
         return ;
-    }
+    }*/
 }
