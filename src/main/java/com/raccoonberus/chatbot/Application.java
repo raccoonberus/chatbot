@@ -1,5 +1,6 @@
 package com.raccoonberus.chatbot;
 
+import com.raccoonberus.chatbot.strategy.WantGoToCinema;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
