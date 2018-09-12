@@ -29,6 +29,7 @@ public class WantGoToCinema {
                 String s = timeNodeList.elementAt(i).getText();
                 s = "https://www.kinopoisk.ru/" + s.substring(20, s.length() - 1);
                 System.out.println(s);
+                parseTime(s);
             }
 
             for (int i = 0; i < nodeList.size(); i++) {
@@ -48,19 +49,18 @@ public class WantGoToCinema {
     private String parseTime(String address) {
 
         String attribute = "data-template";
-        String attributeValue = "schedule-item__template";
+        String attributeValue = "schedule-item__session-button";
 
         String s = null;
         try {
             Parser parser = new Parser(address);
-            HasAttributeFilter filter = new HasAttributeFilter (attribute, attributeValue);
+            HasAttributeFilter filter = new HasAttributeFilter (attribute);
             NodeList nodeList = parser.parse(filter);
 
             for (int i = 0; i < nodeList.size(); i++) {
 
-                s = nodeList.elementAt(i).getText();
-//                System.out.println(s.length());
-//                s = s.substring(200, s.length() - 7);
+                s = nodeList.elementAt(i).toHtml();
+                s = s.substring(s.length() - 12, s.length() - 7);
                 System.out.println(s);
             }
 
@@ -73,7 +73,7 @@ public class WantGoToCinema {
 
     public static void main (String args[]) {
 
-//        new WantGoToCinema().run("https://www.kinopoisk.ru/afisha/new/city/452/");
-        new WantGoToCinema().parseTime("https://www.kinopoisk.ru/film/991097/afisha/city/452/");
+        new WantGoToCinema().run("https://www.kinopoisk.ru/afisha/new/city/452/");
+//        new WantGoToCinema().parseTime("https://www.kinopoisk.ru/film/991097/afisha/city/452/day_view/2018-09-12/");
     }
 }
