@@ -10,33 +10,36 @@ public class WantGoToCinema {
 
     public String run(String address) {
 
-        String nameAttribute = "itemprop";
-        String nameAttributeValue = "name";
-        String timeAttribute = "class";
-        String timeAttributeValue = "or";
+        String attributeMovieName = "itemprop";
+        String attributeMovieNameValue = "name";
+        String attributeSchedule = "class";
+        String attributeScheduleValue = "or";
 
         try {
-            Parser parser = new Parser(address);
-            HasAttributeFilter filter = new HasAttributeFilter (nameAttribute, nameAttributeValue);
-            NodeList nodeList = parser.parse(filter);
+            Parser nameParser = new Parser(address);
+            HasAttributeFilter nameFilter = new HasAttributeFilter (attributeMovieName, attributeMovieNameValue);
+            NodeList nodeList = nameParser.parse(nameFilter);
 
-            Parser timeParser = new Parser(address);
-            HasAttributeFilter timeFilter = new HasAttributeFilter (timeAttribute, timeAttributeValue);
-            NodeList timeNodeList = timeParser.parse(timeFilter);
+            Parser scheduleParser = new Parser(address);
+            HasAttributeFilter scheduleFilter = new HasAttributeFilter (attributeSchedule, attributeScheduleValue);
+            NodeList timeNodeList = scheduleParser.parse(scheduleFilter);
 
-            for (int i = 0; i < timeNodeList.size(); i++) {
+            String scheduleURL;
+            String movieName;
 
-                String s = timeNodeList.elementAt(i).getText();
-                s = "https://www.kinopoisk.ru/" + s.substring(20, s.length() - 1);
-                System.out.println(s);
-                parseTime(s);
-            }
+            for (int i = 0, j = 0; i < nodeList.size(); i++) {
+                movieName = nodeList.elementAt(i).getText().replaceAll("&nbsp;", " ");
 
-            for (int i = 0; i < nodeList.size(); i++) {
-                String s = nodeList.elementAt(i).getText().replaceAll("&nbsp;", " ");
-                if (!s.contains("кинотеатрах")) {
-                    s = s.substring(30, s.length() - 3);
-                    System.out.println(s);
+                if (!movieName.contains("кинотеатрах")) {
+
+                    movieName = movieName.substring(30, movieName.length() - 3);
+                    System.out.println(movieName + "\n");
+
+                    scheduleURL = timeNodeList.elementAt(j).getText();
+                    scheduleURL = "https://www.kinopoisk.ru/" + scheduleURL.substring(20, scheduleURL.length() - 1);
+//                    System.out.println(scheduleURL);
+                    parseSchedule(scheduleURL);
+                    j++;
                 }
             }
 
@@ -46,34 +49,54 @@ public class WantGoToCinema {
         return "nothing";
     }
 
-    private String parseTime(String address) {
+    public String parseSchedule(String address) {
 
-        String attribute = "data-template";
-        String attributeValue = "schedule-item__session-button";
+        String attribute = "class";
+        String attributeValue = "schedule-item";
+        String attributePlaceValue = "schedule-cinema__name";
+        String attributeTime = "data-template";
 
-        String s = null;
         try {
             Parser parser = new Parser(address);
-            HasAttributeFilter filter = new HasAttributeFilter (attribute);
+            HasAttributeFilter filter = new HasAttributeFilter(attribute, attributeValue);
             NodeList nodeList = parser.parse(filter);
+            String node;
 
-            for (int i = 0; i < nodeList.size(); i++) {
+            Parser placeParser = new Parser();
+            HasAttributeFilter placeFilter = new HasAttributeFilter (attribute, attributePlaceValue);
+            String place;
 
-                s = nodeList.elementAt(i).toHtml();
-                s = s.substring(s.length() - 12, s.length() - 7);
-                System.out.println(s);
+            Parser timeParser = new Parser();
+            HasAttributeFilter timeFilter = new HasAttributeFilter (attributeTime);
+            String time;
+
+            for(int i = 0; i < nodeList.size(); i++) {
+
+                node = nodeList.elementAt(i).toHtml();
+
+                timeParser.setInputHTML(node);
+                NodeList timeList = timeParser.parse(timeFilter);
+                time = timeList.elementAt(0).toHtml(); // it's not fine case it's random nearest (2D/3D/IMAX - whatever)
+                time = time.substring(time.length() - 12, time.length() - 7);
+                System.out.print(time + "  ");
+
+                placeParser.setInputHTML(node);
+                NodeList placeList = placeParser.parse(placeFilter);
+                place = placeList.elementAt(0).toHtml();
+                place = place.substring(101, place.length() - 4);
+                System.out.println(place);
             }
-
+            System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return s;
+        return "idk";
     }
 
     public static void main (String args[]) {
 
         new WantGoToCinema().run("https://www.kinopoisk.ru/afisha/new/city/452/");
-//        new WantGoToCinema().parseTime("https://www.kinopoisk.ru/film/991097/afisha/city/452/day_view/2018-09-12/");
+//        new WantGoToCinema().parseSchedule("");
     }
 }
