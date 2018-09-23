@@ -11,7 +11,7 @@ public class WantGoToCinema implements ReplyStrategy {
 
     @Override
     public boolean isSupport(String message) {
-        return true;
+        return message.toLowerCase().contains(keywords.toLowerCase());
     }
 
     @Override
@@ -22,6 +22,7 @@ public class WantGoToCinema implements ReplyStrategy {
     @Override
     public String run(String message) {
         String address = "https://mori-cinema.ru/cinema_detail/76_mori_sinema_krasnogorsk/schedule.php";
+        StringBuffer schedule = new StringBuffer("MORI CINEMA nearest movie sessions for today:\n\n");
 
         try {
             Parser parser = new Parser(address);
@@ -45,8 +46,6 @@ public class WantGoToCinema implements ReplyStrategy {
             NodeList timeList;
             String time;
 
-            System.out.println("MORI CINEMA nearest movie sessions for today:\n");
-
             for (int i = 0; i < blockList.size(); i++) {
 
                 block = blockList.elementAt(i).toHtml();
@@ -58,22 +57,25 @@ public class WantGoToCinema implements ReplyStrategy {
                 if (timeList.size() > 0) {
                     time = timeList.elementAt(0).toHtml();
                     time = time.replaceAll(" ", "");
-                    time = time.substring(time.indexOf('>') + 2, time.indexOf('>') + 7);
-                    System.out.print(time + "  ");
+                    time = time.substring(time.indexOf('>') + 2, time.indexOf('>') + 7) + "  ";
+                    schedule.append(time);
                 } else if (nameList.size() > 0) {
-                    System.out.print("--:--  ");
+                    schedule.append("--:--  ");
                 }
 
                 if (nameList.size() > 0) {
                     name = nameList.elementAt(0).toHtml();
-                    name = name.substring(name.indexOf('>') + 1, name.length() - 4);
-                    System.out.println(name);
+                    name = name.substring(name.indexOf('>') + 1, name.length() - 4) + "\n";
+                    schedule.append(name);
                 }
             }
+//            schedule.append("\nFor full schedule go:\n").append(address);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return address;
+
+        String str = String.valueOf(schedule);
+        return str;
     }
 }
